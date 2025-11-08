@@ -1,0 +1,55 @@
+{
+  "name": "gluify",
+  "version": "1.0.0",
+  "description": "A type-safe pipeline library for TypeScript that glues functions from different libraries together",
+  "main": "dist/Gluify.js",
+  "types": "dist/Gluify.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "echo \"Run examples manually for v1.0\" && exit 0",
+    "examples:basic": "tsx examples/test-examples.ts",
+    "examples:errors": "tsx examples/test-error-handling.ts",
+    "examples:utilities": "tsx examples/test-utilities.ts",
+    "examples:lazy": "tsx examples/test-lazy-evaluation.ts",
+    "examples:all": "npm run examples:basic && npm run examples:errors && npm run examples:utilities && npm run examples:lazy"
+  },
+  "keywords": [
+    "pipeline",
+    "composition",
+    "functional",
+    "pipe",
+    "chain",
+    "flow",
+    "typescript",
+    "type-safe",
+    "lazy-evaluation",
+    "async",
+    "utility",
+    "lodash",
+    "ramda"
+  ],
+  "author": "oharu121 <jefflin1201@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oharu121/gluify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oharu121/gluify/issues"
+  },
+  "homepage": "https://github.com/oharu121/gluify#readme",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "tsx": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

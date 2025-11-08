@@ -1,0 +1,24 @@
+# Source files
+src/
+
+# Examples and tests
+examples/
+dev-notes/
+
+# Config files
+tsconfig.json
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitattributes
+
+# CI/CD
+.github/
+
+# Development
+*.md.backup
