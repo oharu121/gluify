@@ -1,14 +1,14 @@
 {
   "name": "gluify",
   "version": "2.0.0",
+  "type": "module",
   "description": "A type-safe pipeline library for TypeScript that glues functions from different libraries together",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./index.js"
+      "import": "./index.js"
     }
   },
   "files": [

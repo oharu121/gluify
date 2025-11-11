@@ -4,10 +4,5 @@
  * @license MIT
  */
 
-'use strict';
-
-module.exports = require('./dist/Gluify');
-module.exports.default = require('./dist/Gluify').default;
-module.exports.gluify = require('./dist/Gluify').gluify;
-module.exports.Gluify = require('./dist/Gluify').Gluify;
-module.exports.PipeFunction = require('./dist/Gluify').PipeFunction;
+export { gluify, Gluify, PipeFunction } from './dist/Gluify.js';
+export { gluify as default } from './dist/Gluify.js';
