@@ -36,34 +36,63 @@ class Gluify<T> {
     return this.createNext<U>([...this.operations, operation]);
   }
 
+  // Async pipe - awaits promises before piping to handle async functions in the chain
+  // If the current value is a Promise, await it first, then apply the function
+  pipeAsync<U, Args extends any[]>(
+    fn: PipeFunction<Awaited<T>, U, Args>,
+    ...args: Args
+  ): Gluify<U> {
+    const operation: Operation = async (value: any) => {
+      // If value is a Promise, await it first
+      const resolvedValue = value instanceof Promise ? await value : value;
+      return fn(resolvedValue, ...args);
+    };
+    return this.createNext<U>([...this.operations, operation]);
+  }
+
   // Synchronous execution - for pure sync chains
-  value(): T {
+  run(): T {
     let result: any;
+    let error: Error | null = null;
 
-    // Scan for error handler first
-    let errorHandler: ((error: Error) => any) | null = null;
-    for (const op of this.operations) {
-      if ((op as any).__isErrorHandler) {
-        errorHandler = (op as any).__handler;
-      }
-    }
-
+    // Execute lazy initializer if needed
     try {
-      // Execute lazy initializer if needed
       result = this.isLazy && this.lazyInitializer
         ? this.lazyInitializer()
         : this.initialValue;
+    } catch (e) {
+      error = e as Error;
+    }
 
-      for (const op of this.operations) {
-        // Skip error handlers during execution
-        if (!(op as any).__isErrorHandler) {
+    // Execute operations in sequence
+    for (const op of this.operations) {
+      if (error) {
+        // If there's an error, look for error handler
+        if ((op as any).__isErrorHandler) {
+          try {
+            result = (op as any).__handler(error);
+            error = null; // Error handled, continue with pipeline
+          } catch (e) {
+            error = e as Error; // Error in handler, continue looking for next handler
+          }
+        }
+        // Skip non-error-handler operations when there's an error
+      } else {
+        // No error, execute normal operations
+        if ((op as any).__isErrorHandler) {
+          // Skip error handlers when there's no error
+          continue;
+        }
+        try {
           result = op(result);
+        } catch (e) {
+          error = e as Error;
         }
       }
-    } catch (error) {
-      if (errorHandler) {
-        return errorHandler(error as Error);
-      }
+    }
+
+    // If there's still an error at the end, throw it
+    if (error) {
       throw error;
     }
 
@@ -71,33 +100,48 @@ class Gluify<T> {
   }
 
   // Asynchronous execution - handles both sync and async functions
-  async valueAsync(): Promise<Awaited<T>> {
+  async runAsync(): Promise<Awaited<T>> {
     let result: any;
+    let error: Error | null = null;
 
-    // Scan for error handler first
-    let errorHandler: ((error: Error) => any) | null = null;
-    for (const op of this.operations) {
-      if ((op as any).__isErrorHandler) {
-        errorHandler = (op as any).__handler;
-      }
-    }
-
+    // Execute lazy initializer if needed
     try {
-      // Execute lazy initializer if needed
       result = this.isLazy && this.lazyInitializer
         ? await this.lazyInitializer()
         : this.initialValue;
+    } catch (e) {
+      error = e as Error;
+    }
 
-      for (const op of this.operations) {
-        // Skip error handlers during execution
-        if (!(op as any).__isErrorHandler) {
+    // Execute operations in sequence
+    for (const op of this.operations) {
+      if (error) {
+        // If there's an error, look for error handler
+        if ((op as any).__isErrorHandler) {
+          try {
+            result = await (op as any).__handler(error);
+            error = null; // Error handled, continue with pipeline
+          } catch (e) {
+            error = e as Error; // Error in handler, continue looking for next handler
+          }
+        }
+        // Skip non-error-handler operations when there's an error
+      } else {
+        // No error, execute normal operations
+        if ((op as any).__isErrorHandler) {
+          // Skip error handlers when there's no error
+          continue;
+        }
+        try {
           result = await op(result);
+        } catch (e) {
+          error = e as Error;
         }
       }
-    } catch (error) {
-      if (errorHandler) {
-        return await errorHandler(error as Error);
-      }
+    }
+
+    // If there's still an error at the end, throw it
+    if (error) {
       throw error;
     }
 

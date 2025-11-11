@@ -1,9 +1,16 @@
 # Gluify
 
-A type-safe pipeline library for TypeScript that glues functions from different libraries together.
+[![npm version](https://badge.fury.io/js/gluify.svg)](https://badge.fury.io/js/gluify)
+![License](https://img.shields.io/npm/l/gluify)
+![Types](https://img.shields.io/npm/types/gluify)
 
-[![npm version](https://img.shields.io/npm/v/gluify.svg)](https://www.npmjs.com/package/gluify)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![NPM Downloads](https://img.shields.io/npm/dw/gluify)
+![Last Commit](https://img.shields.io/github/last-commit/oharu121/gluify)
+![Coverage](https://codecov.io/gh/oharu121/gluify/branch/main/graph/badge.svg)
+![CI Status](https://github.com/oharu121/gluify/actions/workflows/ci.yml/badge.svg)
+![GitHub Stars](https://img.shields.io/github/stars/oharu121/gluify?style=social)
+
+A type-safe pipeline library for TypeScript that glues functions from different libraries together.
 
 ## Why Gluify?
 
@@ -13,8 +20,8 @@ Unlike Lodash (which only chains its own methods) or Ramda (which requires curri
 
 ## Features
 
-✅ **Lazy Evaluation** - Nothing executes until `.value()` or `.valueAsync()`
-✅ **Async Support** - Mix sync/async functions freely, single `await` at end
+✅ **Lazy Evaluation** - Nothing executes until `.run()` or `.runAsync()`
+✅ **Async Support** - Mix sync/async functions freely with `.pipeAsync()`, single `await` at end
 ✅ **Error Handling** - Built-in `.catch()`, `.recover()`, `.when()` for robust pipelines
 ✅ **27+ Utility Methods** - Built-in, type-safe, no separate imports
 ✅ **Type Safety** - Full TypeScript generics, conditional types
@@ -37,35 +44,35 @@ const result = gluify(() => [1, 2, 3, 4, 5])
   .filter(n => n % 2 === 0)
   .map(n => n * 2)
   .reduce((sum, n) => sum + n, 0)
-  .value();  // 12
+  .run();  // 12
 
 // Async pipeline
 const user = await gluify(fetchUser, userId)
   .pipe(validateUser)
   .pipe(enrichProfile)
   .catch(error => defaultUser)
-  .valueAsync();
+  .runAsync();
 
 // String processing
 const result = gluify(() => '  hello world  ')
   .trim()
   .toUpperCase()
   .replace('WORLD', 'GLUIFY')
-  .value();  // "HELLO GLUIFY"
+  .run();  // "HELLO GLUIFY"
 ```
 
 ## Core Concepts
 
 ### 1. Lazy Evaluation
 
-Operations are stored and only executed when you call `.value()` or `.valueAsync()`:
+Operations are stored and only executed when you call `.run()` or `.runAsync()`:
 
 ```typescript
 const chain = gluify(expensiveFunction)
   .pipe(operation1)
   .pipe(operation2);  // Nothing executed yet!
 
-const result = chain.value();  // NOW it executes
+const result = chain.run();  // NOW it executes
 ```
 
 ### 2. Type-Safe Chaining
@@ -81,7 +88,7 @@ gluify(() => [1, 2, 3])
 
 ### 3. Async Made Easy
 
-No more nested `await` or `.then()` chains:
+No more nested `await` or `.then()` chains. Use `.pipeAsync()` to handle Promises in the chain:
 
 ```typescript
 // Before (painful)
@@ -89,11 +96,11 @@ const data = await fetchData(id);
 const processed = await processData(data);
 const validated = await validate(processed);
 
-// After (clean)
+// After (clean) - pipeAsync awaits Promises automatically
 const result = await gluify(fetchData, id)
-  .pipe(processData)
-  .pipe(validate)
-  .valueAsync();
+  .pipeAsync(data => processData(data))  // Awaits fetchData result
+  .pipeAsync(processed => validate(processed))  // Awaits processData result
+  .runAsync();
 ```
 
 ## API Reference
@@ -118,23 +125,34 @@ Add any function to the pipeline.
 .pipe(add, 10)  // Additional args
 ```
 
-#### `.value()`
+#### `.pipeAsync(fn, ...args)`
+Async pipe - awaits Promises before applying the function. Use this when the previous operation returns a Promise and you need the resolved value.
+
+```typescript
+// When initial function returns Promise<User>
+await gluify(fetchUser, userId)
+  .pipeAsync(user => user.profile)  // Awaits Promise, receives User
+  .pipe(profile => profile.name)     // Regular pipe for sync transform
+  .runAsync();
+```
+
+#### `.run()`
 Execute the pipeline synchronously and return the result.
 
 ```typescript
 const result = gluify(() => 5)
   .pipe(x => x * 2)
-  .value();  // 10
+  .run();  // 10
 ```
 
-#### `.valueAsync()`
+#### `.runAsync()`
 Execute the pipeline asynchronously (handles both sync and async functions).
 
 ```typescript
 const result = await gluify(asyncFn)
+  .pipeAsync(resolvedValue => transform(resolvedValue))
   .pipe(syncFn)
-  .pipe(asyncFn2)
-  .valueAsync();
+  .runAsync();
 ```
 
 #### `.tap(fn)`
@@ -144,7 +162,7 @@ Execute a side effect without changing the value (useful for logging).
 gluify(() => 42)
   .tap(x => console.log('Debug:', x))
   .pipe(x => x * 2)
-  .value();  // Logs: "Debug: 42", returns 84
+  .run();  // Logs: "Debug: 42", returns 84
 ```
 
 ### Error Handling
@@ -156,7 +174,7 @@ Catch errors and provide recovery logic.
 gluify(mightFail)
   .pipe(processData)
   .catch(error => ({ fallback: 'data' }))
-  .value();
+  .run();
 ```
 
 #### `.recover(fallbackValue)`
@@ -165,7 +183,7 @@ Simple fallback value on error.
 ```typescript
 gluify(parseJSON, invalidJSON)
   .recover({ error: true })
-  .value();
+  .run();
 ```
 
 #### `.when(predicate, fn)`
@@ -174,7 +192,7 @@ Conditionally execute a function.
 ```typescript
 gluify(() => user)
   .when(u => u.age >= 18, markAsAdult)
-  .value();
+  .run();
 ```
 
 ### Array Utilities
@@ -237,7 +255,7 @@ const topProducts = gluify(() => products)
   .take(10)
   .map(p => `${p.name} ($${p.price})`)
   .join(', ')
-  .value();
+  .run();
 ```
 
 ### API Error Handling
@@ -250,7 +268,7 @@ const userData = await gluify(fetchUser, userId)
   })
   .pipe(enrichUserData)
   .when(user => user.needsValidation, validateUser)
-  .valueAsync();
+  .runAsync();
 ```
 
 ### String Processing
@@ -262,7 +280,7 @@ const processedText = gluify(() => 'apple,banana,cherry')
   .map(fruit => fruit.toUpperCase())
   .filter(fruit => fruit.length > 5)
   .join(' | ')
-  .value();  // "BANANA | CHERRY"
+  .run();  // "BANANA | CHERRY"
 ```
 
 ## Limitations

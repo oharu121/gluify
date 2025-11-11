@@ -15,7 +15,7 @@ const result1 = gluify(() => numbers)
   .filter(n => n % 2 === 0)           // [2, 4, 6, 8, 10]
   .map(n => n * 2)                     // [4, 8, 12, 16, 20]
   .sort((a, b) => b - a)               // [20, 16, 12, 8, 4]
-  .value();
+  .run();
 
 console.log('  Filtered, mapped, sorted:', result1);
 console.log('');
@@ -25,7 +25,7 @@ const result2 = gluify(() => [1, 2, 2, 3, 3, 3, 4, 5])
   .unique()                             // [1, 2, 3, 4, 5]
   .take(3)                              // [1, 2, 3]
   .reduce((sum, n) => sum + n, 0)      // 6
-  .value();
+  .run();
 
 console.log('  Unique, take 3, sum:', result2);
 console.log('');
@@ -39,15 +39,15 @@ const users = [
 
 const foundUser = gluify(() => users)
   .find(u => u.age > 28)
-  .value();
+  .run();
 
 const hasActiveUsers = gluify(() => users)
   .some(u => u.active)
-  .value();
+  .run();
 
 const allActive = gluify(() => users)
   .every(u => u.active)
-  .value();
+  .run();
 
 console.log('  Found user:', foundUser?.name);
 console.log('  Has active users:', hasActiveUsers);
@@ -60,7 +60,7 @@ const result4 = gluify(() => nested)
   .flat()                               // [1, 2, 3, 4, 5, 6]
   .reverse()                            // [6, 5, 4, 3, 2, 1]
   .skip(2)                              // [4, 3, 2, 1]
-  .value();
+  .run();
 
 console.log('  Flattened, reversed, skipped 2:', result4);
 console.log('');
@@ -81,11 +81,11 @@ const user = {
 
 const publicUser = gluify(() => user)
   .omit('password')
-  .value();
+  .run();
 
 const basicInfo = gluify(() => user)
   .pick('name', 'email')
-  .value();
+  .run();
 
 console.log('  Public user:', publicUser);
 console.log('  Basic info:', basicInfo);
@@ -96,15 +96,15 @@ const config = { host: 'localhost', port: 3000, ssl: true };
 
 const configKeys = gluify(() => config)
   .keys()
-  .value();
+  .run();
 
 const configValues = gluify(() => config)
   .values()
-  .value();
+  .run();
 
 const configEntries = gluify(() => config)
   .entries()
-  .value();
+  .run();
 
 console.log('  Keys:', configKeys);
 console.log('  Values:', configValues);
@@ -117,7 +117,7 @@ const userPrefs = { theme: 'dark' };
 
 const finalPrefs = gluify(() => defaults)
   .merge(userPrefs)
-  .value();
+  .run();
 
 console.log('  Merged preferences:', finalPrefs);
 console.log('');
@@ -132,7 +132,7 @@ const result8 = gluify(() => '  hello world  ')
   .trim()
   .toUpperCase()
   .replace('WORLD', 'GLUIFY')
-  .value();
+  .run();
 
 console.log('  Transformed string:', result8);
 console.log('');
@@ -142,7 +142,7 @@ const result9 = gluify(() => 'apple,banana,cherry')
   .split(',')
   .map(fruit => fruit.toUpperCase())
   .join(' | ')
-  .value();
+  .run();
 
 console.log('  Split, mapped, joined:', result9);
 console.log('');
@@ -154,7 +154,7 @@ const words = gluify(() => 'The Quick Brown Fox')
   .filter(word => word.length > 3)
   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
   .join(', ')
-  .value();
+  .run();
 
 console.log('  Processed words:', words);
 console.log('');
@@ -167,11 +167,11 @@ console.log('--- General Utilities ---\n');
 console.log('Example 11: defaultTo');
 const result11a = gluify(() => null)
   .defaultTo('fallback value')
-  .value();
+  .run();
 
 const result11b = gluify(() => 'actual value')
   .defaultTo('fallback value')
-  .value();
+  .run();
 
 console.log('  Null with default:', result11a);
 console.log('  Value with default:', result11b);
@@ -180,11 +180,11 @@ console.log('');
 console.log('Example 12: isNil');
 const isNull = gluify(() => null)
   .isNil()
-  .value();
+  .run();
 
 const isNotNull = gluify(() => 'value')
   .isNil()
-  .value();
+  .run();
 
 console.log('  null is nil:', isNull);
 console.log('  "value" is nil:', isNotNull);
@@ -198,7 +198,7 @@ const cloned = gluify(() => original)
     obj.name = 'Bob';
     return obj;
   })
-  .value();
+  .run();
 
 console.log('  Original:', original.name);
 console.log('  Cloned and modified:', cloned.name);
@@ -233,7 +233,7 @@ const summary = gluify(() => products)
   .take(2)                                         // Top 2
   .map(p => `${p.name} ($${p.price})`)            // Format
   .join(', ')                                      // Combine
-  .value();
+  .run();
 
 console.log('Top 2 in-stock electronics:', summary);
 console.log('');
@@ -252,7 +252,7 @@ const asyncUtilExample = async () => {
     .map(item => item.charAt(0).toUpperCase() + item.slice(1))
     .sort()
     .join(' -> ')
-    .valueAsync();
+    .runAsync();
 
   console.log('  Async processed:', result);
 };

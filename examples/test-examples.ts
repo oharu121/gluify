@@ -11,7 +11,7 @@ const syncExample = () => {
     .pipe(Math.floor)
     .tap(x => console.log('Debug:', x))
     .pipe(x => x + 10)
-    .value();
+    .run();
 
   console.log('Sync result:', result); // 18
 };
@@ -29,7 +29,7 @@ const asyncExample = async () => {
     .pipe(enrichUser)
     .pipe(validateUser)
     .tap(user => console.log('Processing user:', user.name))
-    .valueAsync();
+    .runAsync();
 
   console.log('Async result:', result);
 };
@@ -48,7 +48,7 @@ const mixedExample = async () => {
     .pipe(toUpperCase)    // sync
     .pipe(addExclamation) // async
     .tap(str => console.log('Final string:', str))
-    .valueAsync();
+    .runAsync();
 
   console.log('Mixed result:', result); // "HELLO WORLD!"
 };
@@ -76,7 +76,7 @@ const realWorldExample = async () => {
     .tap(users => console.log(`Found ${users.length} active users`))
     .pipe(mapToNames)
     .pipe(saveToDatabase)
-    .valueAsync();
+    .runAsync();
 
   console.log('Saved:', result);
 };
@@ -91,7 +91,7 @@ const argsExample = () => {
   const result = gluify(Math.sqrt, 25)
     .pipe(multiply, 3)    // 5 * 3 = 15
     .pipe(add, 10)        // 15 + 10 = 25
-    .value();
+    .run();
 
   console.log('With args:', result); // 25
 };

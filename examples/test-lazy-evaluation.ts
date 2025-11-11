@@ -7,7 +7,7 @@ console.log('=== Lazy Evaluation Test ===\n');
 // ============================================
 // Example 1: Prove Initial Function is Lazy
 // ============================================
-console.log('Example 1: Initial function NOT executed until .value()');
+console.log('Example 1: Initial function NOT executed until .run()');
 
 let executionCount = 0;
 
@@ -25,31 +25,31 @@ const chain = gluify(expensiveFunction)
 console.log(`Execution count after creating chain: ${executionCount}`);
 console.log('Chain created but function NOT executed yet!\n');
 
-console.log('Calling .value()...');
-const result1 = chain.value();
+console.log('Calling .run()...');
+const result1 = chain.run();
 console.log(`Result: ${result1}`);
-console.log(`Execution count after .value(): ${executionCount}`);
+console.log(`Execution count after .run(): ${executionCount}`);
 console.log('');
 
 // ============================================
-// Example 2: Multiple .value() calls execute multiple times
+// Example 2: Multiple .run() calls execute multiple times
 // ============================================
-console.log('Example 2: Each .value() call re-executes the chain');
+console.log('Example 2: Each .run() call re-executes the chain');
 
 executionCount = 0;
 const chain2 = gluify(expensiveFunction)
   .pipe(x => x * 3);
 
-console.log(`Before any .value(): executionCount = ${executionCount}`);
+console.log(`Before any .run(): executionCount = ${executionCount}`);
 
-const result2a = chain2.value();
-console.log(`After 1st .value(): executionCount = ${executionCount}, result = ${result2a}`);
+const result2a = chain2.run();
+console.log(`After 1st .run(): executionCount = ${executionCount}, result = ${result2a}`);
 
-const result2b = chain2.value();
-console.log(`After 2nd .value(): executionCount = ${executionCount}, result = ${result2b}`);
+const result2b = chain2.run();
+console.log(`After 2nd .run(): executionCount = ${executionCount}, result = ${result2b}`);
 
-const result2c = chain2.value();
-console.log(`After 3rd .value(): executionCount = ${executionCount}, result = ${result2c}`);
+const result2c = chain2.run();
+console.log(`After 3rd .run(): executionCount = ${executionCount}, result = ${result2c}`);
 console.log('');
 
 // ============================================
@@ -70,10 +70,10 @@ const chain3 = gluify(() => 10)
     console.log(`  -> tap executed! value=${x}, count=${sideEffectCount}`);
   });
 
-console.log(`Before .value(): sideEffectCount = ${sideEffectCount}`);
-console.log('Calling .value()...');
-const result3 = chain3.value();
-console.log(`After .value(): sideEffectCount = ${sideEffectCount}, result = ${result3}`);
+console.log(`Before .run(): sideEffectCount = ${sideEffectCount}`);
+console.log('Calling .run()...');
+const result3 = chain3.run();
+console.log(`After .run(): sideEffectCount = ${sideEffectCount}, result = ${result3}`);
 console.log('');
 
 // ============================================
@@ -93,11 +93,11 @@ console.log('Example 4: Async functions are also lazy');
   const asyncChain = gluify(asyncExpensiveFunction)
     .pipe((x: any) => [x, x * 2, x * 3]);
 
-  console.log(`Before .valueAsync(): asyncExecutionCount = ${asyncExecutionCount}`);
-  console.log('Calling .valueAsync()...');
+  console.log(`Before .runAsync(): asyncExecutionCount = ${asyncExecutionCount}`);
+  console.log('Calling .runAsync()...');
 
-  const asyncResult = await asyncChain.valueAsync();
-  console.log(`After .valueAsync(): asyncExecutionCount = ${asyncExecutionCount}, result = ${asyncResult}`);
+  const asyncResult = await asyncChain.runAsync();
+  console.log(`After .runAsync(): asyncExecutionCount = ${asyncExecutionCount}, result = ${asyncResult}`);
   console.log('');
 })();
 
@@ -119,9 +119,9 @@ const chain5 = gluify(() => 5)
   .pipe(x => trackExecution(x, 'Pipe'))                     // Executed
   .when(x => x > 5, x => trackExecution(x, 'Second when')); // Executed
 
-console.log(`Before .value(): conditionalExecutions = ${conditionalExecutions}`);
-const result5 = chain5.value();
-console.log(`After .value(): conditionalExecutions = ${conditionalExecutions}, result = ${result5}`);
+console.log(`Before .run(): conditionalExecutions = ${conditionalExecutions}`);
+const result5 = chain5.run();
+console.log(`After .run(): conditionalExecutions = ${conditionalExecutions}, result = ${result5}`);
 console.log('');
 
 // ============================================
@@ -151,13 +151,13 @@ console.log(`\nAll chains created, dynamicExecutions = ${dynamicExecutions}`);
 console.log('No functions executed yet!\n');
 
 console.log('Executing chainA:');
-const resultA = chainA.value();
+const resultA = chainA.run();
 
 console.log('\nExecuting chainB:');
-const resultB = chainB.value();
+const resultB = chainB.run();
 
 console.log('\nExecuting chainC:');
-const resultC = chainC.value();
+const resultC = chainC.run();
 
 console.log(`\nFinal dynamicExecutions = ${dynamicExecutions}`);
 console.log('');
@@ -168,8 +168,8 @@ console.log('');
 console.log('=== Summary ===');
 console.log('✓ Initial function is NOT executed when gluify() is called');
 console.log('✓ Operations are stored, not executed during chaining');
-console.log('✓ Execution only happens when .value() or .valueAsync() is called');
-console.log('✓ Each .value() call re-executes the entire chain from scratch');
+console.log('✓ Execution only happens when .run() or .runAsync() is called');
+console.log('✓ Each .run() call re-executes the entire chain from scratch');
 console.log('✓ This enables dynamic chain building without side effects');
 console.log('');
 console.log('=== Lazy Evaluation Test Complete! ===');

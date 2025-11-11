@@ -20,7 +20,7 @@ const result1 = gluify(fetchUserWithError, 'user-123')
     return { id: 'unknown', name: 'Guest User' };
   })
   .pipe(user => user.name)
-  .value();
+  .run();
 
 console.log('  Result:', result1); // "Guest User"
 console.log('');
@@ -37,7 +37,7 @@ const parseJSON = (jsonString: string) => {
 const result2 = gluify(parseJSON, 'invalid json {{{')
   .recover({ error: true, message: 'Invalid JSON' })
   .pipe(obj => obj.message || 'Success')
-  .value();
+  .run();
 
 console.log('  Result:', result2); // "Invalid JSON"
 console.log('');
@@ -59,7 +59,7 @@ const asyncExample = async () => {
       return { value: 'fallback data' };
     })
     .pipe((data: any) => data.value)
-    .valueAsync();
+    .runAsync();
 
   console.log('  Result:', result); // "fallback data"
 };
@@ -78,7 +78,7 @@ const result4 = gluify(Math.sqrt, 16)
     x => x * 10     // Only executes if x > 5
   )
   .pipe(x => x + 1)
-  .value();
+  .run();
 
 console.log('  Result with condition true:', result4); // 81
 
@@ -89,7 +89,7 @@ const result4b = gluify(Math.sqrt, 4)
     x => x * 10     // Skipped because 4 is not > 5
   )
   .pipe(x => x + 1)
-  .value();
+  .run();
 
 console.log('  Result with condition false:', result4b); // 5
 console.log('');
@@ -116,7 +116,7 @@ const realWorldExample = async () => {
       return ['Alice', 'Bob']; // Fallback to cached data
     })
     .pipe(names => names.join(', '))
-    .valueAsync();
+    .runAsync();
 
   console.log('  Final result:', result); // "Alice, Bob"
 };
@@ -139,7 +139,7 @@ const result6 = gluify(() => 10)
     return 100; // Fallback to 100
   })
   .pipe(x => x + 50)
-  .value();
+  .run();
 
 console.log('  Result:', result6); // 150
 console.log('');
@@ -161,7 +161,7 @@ const result7 = gluify((): User => ({ name: 'Alice', age: 25 }))
     user => ({ ...user, verified: true })
   )
   .pipe(user => `${user.name} (${user.verified ? 'Verified' : 'Unverified'})`)
-  .value();
+  .run();
 
 console.log('  Result:', result7); // "Alice (Verified)"
 console.log('');
