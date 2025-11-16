@@ -58,7 +58,7 @@
   },
   "homepage": "https://github.com/oharu121/gluify#readme",
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.8",
     "@vitest/ui": "^4.0.8",
     "tsx": "^4.0.0",
