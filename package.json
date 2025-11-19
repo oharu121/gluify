@@ -8,7 +8,8 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./index.js"
+      "import": "./index.js",
+      "require": "./index.js"
     }
   },
   "files": [
@@ -25,6 +26,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+    "sync": "git pull --rebase && npm install && npm test",
+    "sync:quick": "git pull --rebase && npm install",
     "examples:basic": "tsx examples/test-examples.ts",
     "examples:errors": "tsx examples/test-error-handling.ts",
     "examples:utilities": "tsx examples/test-utilities.ts",

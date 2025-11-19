@@ -3,7 +3,6 @@
 [![npm version](https://badge.fury.io/js/gluify.svg)](https://badge.fury.io/js/gluify)
 ![License](https://img.shields.io/npm/l/gluify)
 ![Types](https://img.shields.io/npm/types/gluify)
-
 ![NPM Downloads](https://img.shields.io/npm/dw/gluify)
 ![Last Commit](https://img.shields.io/github/last-commit/oharu121/gluify)
 ![Coverage](https://codecov.io/gh/oharu121/gluify/branch/main/graph/badge.svg)
