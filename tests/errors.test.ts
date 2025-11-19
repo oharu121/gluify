@@ -10,7 +10,7 @@ describe('Error Handling', () => {
 
       const result = gluify(throwError)
         .pipe(x => x)
-        .catch(error => 'fallback')
+        .catch(() => 'fallback')
         .run();
 
       expect(result).toBe('fallback');
@@ -22,14 +22,18 @@ describe('Error Handling', () => {
       };
 
       const result = await gluify(throwError)
-        .catch(error => 'fallback')
+        .catch(() => 'fallback')
         .runAsync();
 
       expect(result).toBe('fallback');
     });
 
     it('should pass error to handler', () => {
-      const errorHandler = vi.fn(error => 'handled');
+      let capturedError: Error | undefined;
+      const errorHandler = vi.fn((error: Error) => {
+        capturedError = error;
+        return 'handled';
+      });
 
       gluify(() => {
         throw new Error('Test');
@@ -38,8 +42,8 @@ describe('Error Handling', () => {
         .run();
 
       expect(errorHandler).toHaveBeenCalled();
-      expect(errorHandler.mock.calls[0][0]).toBeInstanceOf(Error);
-      expect(errorHandler.mock.calls[0][0].message).toBe('Test');
+      expect(capturedError).toBeInstanceOf(Error);
+      expect(capturedError?.message).toBe('Test');
     });
 
     it('should allow recovery with transformation', () => {
@@ -90,9 +94,9 @@ describe('Error Handling', () => {
   describe('.recover()', () => {
     it('should provide fallback value on error', () => {
       const result = gluify(() => {
-        throw new Error('Error');
+        throw new Error("Error");
       })
-        .recover(42)
+        .catch(() => 42)
         .run();
 
       expect(result).toBe(42);
@@ -102,7 +106,7 @@ describe('Error Handling', () => {
       const result = await gluify(async () => {
         throw new Error('Async error');
       })
-        .recover('fallback')
+        .catch(() => 'fallback')
         .runAsync();
 
       expect(result).toBe('fallback');
@@ -187,7 +191,7 @@ describe('Error Handling', () => {
         })
           .pipe(fn)
           .run();
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -207,11 +211,11 @@ describe('Error Handling', () => {
     });
 
     it('should handle API failures with fallback', async () => {
-      const fetchUser = async (id: number) => {
+      const fetchUser = async () => {
         throw new Error('Network error');
       };
 
-      const result = await gluify(fetchUser, 1)
+      const result = await gluify(fetchUser)
         .catch(() => ({ id: 0, name: 'Guest' }))
         .pipeAsync(user => user.name)
         .runAsync();

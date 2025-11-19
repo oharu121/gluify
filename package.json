@@ -33,7 +33,10 @@
     "examples:utilities": "tsx examples/test-utilities.ts",
     "examples:lazy": "tsx examples/test-lazy-evaluation.ts",
     "examples:async": "tsx examples/test-async-pipeAsync.ts",
-    "examples:all": "npm run examples:basic && npm run examples:errors && npm run examples:utilities && npm run examples:lazy && npm run examples:async"
+    "examples:all": "npm run examples:basic && npm run examples:errors && npm run examples:utilities && npm run examples:lazy && npm run examples:async",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "pipeline",
@@ -61,9 +64,14 @@
   },
   "homepage": "https://github.com/oharu121/gluify#readme",
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
     "@vitest/coverage-v8": "^4.0.8",
     "@vitest/ui": "^4.0.8",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
     "tsx": "^4.0.0",
     "typescript": "^5.6.0",
     "vitest": "^4.0.8"
