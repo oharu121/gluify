@@ -9,7 +9,7 @@ console.log('=== Error Handling Examples ===\n');
 // ============================================
 console.log('Example 1: Basic catch() - Handling API errors');
 
-const fetchUserWithError = (id: string) => {
+const fetchUserWithError = (_id: string) => {
   throw new Error('User not found');
 };
 
@@ -111,7 +111,7 @@ const realWorldExample = async () => {
   const result = await gluify(fetchUsers)
     .pipe(filterActive)
     .pipe(mapToNames)
-    .catch(error => {
+    .catch(_error => {
       console.log('  API failed, using cached data');
       return ['Alice', 'Bob']; // Fallback to cached data
     })

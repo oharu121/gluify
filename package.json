@@ -26,6 +26,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+    "test:all": "npm run typecheck && npm run lint && npm run test",
     "sync": "git pull --rebase && npm install && npm test",
     "sync:quick": "git pull --rebase && npm install",
     "examples:basic": "tsx examples/test-examples.ts",
@@ -36,7 +37,9 @@
     "examples:all": "npm run examples:basic && npm run examples:errors && npm run examples:utilities && npm run examples:lazy && npm run examples:async",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "node scripts/release.mjs",
+    "token": "node scripts/get-token.mjs"
   },
   "keywords": [
     "pipeline",

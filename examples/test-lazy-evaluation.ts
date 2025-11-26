@@ -151,13 +151,13 @@ console.log(`\nAll chains created, dynamicExecutions = ${dynamicExecutions}`);
 console.log('No functions executed yet!\n');
 
 console.log('Executing chainA:');
-const resultA = chainA.run();
+const _resultA = chainA.run();
 
 console.log('\nExecuting chainB:');
-const resultB = chainB.run();
+const _resultB = chainB.run();
 
 console.log('\nExecuting chainC:');
-const resultC = chainC.run();
+const _resultC = chainC.run();
 
 console.log(`\nFinal dynamicExecutions = ${dynamicExecutions}`);
 console.log('');
