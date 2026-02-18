@@ -21,20 +21,20 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
+    "prepare": "pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "test:all": "npm run typecheck && npm run lint && npm run test",
-    "sync": "git pull --rebase && npm install && npm test",
-    "sync:quick": "git pull --rebase && npm install",
+    "test:all": "pnpm run typecheck && pnpm run lint && pnpm test",
+    "sync": "git pull --rebase && pnpm install && pnpm test",
+    "sync:quick": "git pull --rebase && pnpm install",
     "examples:basic": "tsx examples/test-examples.ts",
     "examples:errors": "tsx examples/test-error-handling.ts",
     "examples:utilities": "tsx examples/test-utilities.ts",
     "examples:lazy": "tsx examples/test-lazy-evaluation.ts",
     "examples:async": "tsx examples/test-async-pipeAsync.ts",
-    "examples:all": "npm run examples:basic && npm run examples:errors && npm run examples:utilities && npm run examples:lazy && npm run examples:async",
+    "examples:all": "pnpm run examples:basic && pnpm run examples:errors && pnpm run examples:utilities && pnpm run examples:lazy && pnpm run examples:async",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
@@ -81,5 +81,6 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.21.0"
 }

@@ -31,6 +31,8 @@ Unlike Lodash (which only chains its own methods) or Ramda (which requires curri
 
 ```bash
 npm install gluify
+# or
+pnpm add gluify
 ```
 
 ## Quick Start
